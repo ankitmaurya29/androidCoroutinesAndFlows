@@ -9,7 +9,7 @@ errow shows up when we do job.join(), defferedResult.await()
  */
 
 fun main() {
-    runBlocking() {
+    runBlocking {
         val errorHandler = CoroutineExceptionHandler {
                 coroutineContext, throwable ->
             println("Error handled by coroutine handler : ${throwable.message}")
