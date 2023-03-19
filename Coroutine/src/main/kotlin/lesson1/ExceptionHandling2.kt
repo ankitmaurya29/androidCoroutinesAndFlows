@@ -1,7 +1,11 @@
 package lesson1
 
 import kotlinx.coroutines.*
-
+/*
+Handle the exception in the child method, because if the child cancels, and if the child was running in the same
+scope /job then the parent also gets cancelled and all the child in that parent also get cancelled. Parent doens't even
+get chance to handle the child process exception via the try/catch block.
+ */
 fun main(){
     runBlocking {
         //program will end if the error happens in the same job or same scope where the error
@@ -37,7 +41,8 @@ fun main(){
                 val def1 = async(Dispatchers.IO) {
                     callFailingMethod(2)
                 }
-                def1.await()
+                def1.await()//the child has cancelled and which causes the parent to cancel, parent doesn't get chance
+                            // to handle the exception via try catch block
             } catch (e: Exception) {
                 println("Caught exception message : ${e.message}")// Changing the Dispatcher doesn't change the job, so
                 //error happens and program ends because current thread also cancells.
@@ -56,8 +61,12 @@ fun main(){
 }
 
 fun callFailingMethod(i : Int) {
+    //try{//uncommenting try catch will work for all cases.
     println("Failing method called : $i")
     throw Exception("Failed method $i")
+    //} catch (e: Exception){
+   //     println("Exception caught at method level: $i")
+   // }
 }
 //Execution output
 /*
